@@ -1,7 +1,7 @@
 package io.work.onlinestore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.work.onlinestore.controllers.ProductController;
+import io.work.onlinestore.controllers.api.ProductController;
 import io.work.onlinestore.data.model.Product;
 import io.work.onlinestore.services.interfaces.ProductService;
 import io.work.onlinestore.util.response.ApiResponse;

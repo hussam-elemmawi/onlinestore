@@ -13,7 +13,7 @@ create table product
 );
 
 alter table product
-  owner to nothing;
+  owner to root777;
 
 create unique index product_id_uindex
   on product (id);
@@ -32,7 +32,7 @@ create table tag
 );
 
 alter table tag
-  owner to nothing;
+  owner to root777;
 
 create unique index tag_id_uindex
   on tag (id);
@@ -54,7 +54,7 @@ create table product_tag_relation
 );
 
 alter table product_tag_relation
-  owner to nothing;
+  owner to root777;
 
 create unique index product_tag_relation_id_uindex
   on product_tag_relation (id);

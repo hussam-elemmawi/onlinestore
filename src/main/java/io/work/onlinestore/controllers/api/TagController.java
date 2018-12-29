@@ -1,4 +1,4 @@
-package io.work.onlinestore.controllers;
+package io.work.onlinestore.controllers.api;
 
 import io.swagger.annotations.ApiOperation;
 import io.work.onlinestore.data.model.Tag;

@@ -57,6 +57,8 @@ public class ProductServiceImpl implements ProductService {
         try {
             String productCode = generateUniqueProductCode();
             product.setProductCode(productCode);
+            product.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             productRepository.save(product);
             return productCode;
         } catch (Exception e) {
