@@ -25,4 +25,4 @@
 /.nb-gradle/
 
 ### Spring Boot ###
-src/main/resources/applocation.properties
+src/main/resources/application.properties
