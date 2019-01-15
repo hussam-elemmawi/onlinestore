@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e) {
             logger.info("Can't update product by code " + product.getProductId() + ", " + e.getMessage() +
                     " @ " + new Date(System.currentTimeMillis()));
-            throw new ServiceException("Can't getByProductId all products " + e.getMessage());
+            throw new ServiceException("Can't update product " + e.getMessage());
         }
     }
 
@@ -101,6 +101,18 @@ public class ProductServiceImpl implements ProductService {
         dirtyProduct.setQuantity(freshProduct.getQuantity());
         dirtyProduct.setPrice(freshProduct.getPrice());
         dirtyProduct.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+    }
+
+    @Override
+    public void delete(String productId) throws ServiceException {
+        try {
+            productRepository.deleteByProductId(productId);
+            storageService.deleteProductPhotos(productId);
+        } catch (Exception e) {
+            logger.info("Can't delete product by code " + productId + ", " + e.getMessage() +
+                    " @ " + new Date(System.currentTimeMillis()));
+            throw new ServiceException("Can't delete product " + e.getMessage());
+        }
     }
 
     @Override

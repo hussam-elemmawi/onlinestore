@@ -28,22 +28,22 @@ public class StorageServiceImpl implements StorageService {
     private final static Logger logger = Logger.getLogger(StorageServiceImpl.class.getSimpleName());
 
     @Override
-    public boolean storeProductPhoto(String productCode, MultipartFile photo) throws ServiceException {
+    public boolean storeProductPhoto(String productId, MultipartFile photo) throws ServiceException {
         try {
-            String productPhotosDirecotrPath = buildProductPhotoDirectoryPath(productCode);
+            String productPhotosDirecotrPath = buildProductPhotoDirectoryPath(productId);
             File productPhotoDirectory = new File(productPhotosDirecotrPath);
             if (productPhotoDirectory == null || !productPhotoDirectory.exists()) {
                 productPhotoDirectory.mkdirs();
             }
 
-            String photoPath = buildPhotoPath(productCode, photo.getOriginalFilename());
+            String photoPath = buildPhotoPath(productId, photo.getOriginalFilename());
 
             Path newPhotoFilePath = Paths.get(photoPath);
 
             Files.copy(photo.getInputStream(), newPhotoFilePath, StandardCopyOption.REPLACE_EXISTING);
 
         } catch (ServiceException | IOException e) {
-            logger.info("Can't store product photo, productId " + productCode + ", photoName " +
+            logger.info("Can't store product photo, productId " + productId + ", photoName " +
                     photo.getOriginalFilename() + " " + e.getMessage() + " @ " + new Date(System.currentTimeMillis()));
             throw new ServiceException(e.getMessage());
         }
@@ -51,8 +51,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public String[] getProductPhotosNames(String productCode) throws ServiceException {
-        File productPhotosDirectory = new File(buildProductPhotoDirectoryPath(productCode));
+    public String[] getProductPhotosNames(String productId) throws ServiceException {
+        File productPhotosDirectory = new File(buildProductPhotoDirectoryPath(productId));
         if (productPhotosDirectory != null && productPhotosDirectory.exists()) {
             return productPhotosDirectory.list();
         }
@@ -60,36 +60,60 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public Resource loadPhotoFileAsResource(String productCode, String photoFileName) throws ServiceException  {
+    public Resource loadPhotoFileAsResource(String productId, String photoFileName) throws ServiceException  {
         try {
-            String photoFilePathString = buildPhotoPath(productCode, photoFileName);
+            String photoFilePathString = buildPhotoPath(productId, photoFileName);
             Path photoFilePath = Paths.get(photoFilePathString);
             Resource resource = new UrlResource(photoFilePath.toUri());
             if(resource.exists()) {
                 return resource;
             } else {
-                logger.info("Can't loadPhotoFileAsResource, productId " + productCode +
+                logger.info("Can't loadPhotoFileAsResource, productId " + productId +
                         ", photoName " + photoFileName + " @ " + new Date(System.currentTimeMillis()));
                 throw new ServiceException("File not found " + photoFileName);
             }
         } catch (MalformedURLException | ServiceException ex) {
-            logger.info("Can't loadPhotoFileAsResource, productId " + productCode +
+            logger.info("Can't loadPhotoFileAsResource, productId " + productId +
                     ", photoName " + photoFileName + " " + ex.getMessage() + " @ " + new Date(System.currentTimeMillis()));
             throw new ServiceException("File not found " + photoFileName);
         }
     }
 
-    private String buildProductPhotoDirectoryPath(String productCode) throws ServiceException {
+    @Override
+    public boolean deleteProductPhotos(String productId) throws ServiceException {
+        File productPhotosDirectory = new File(buildProductPhotoDirectoryPath(productId));
+        boolean success = true;
+        if (productPhotosDirectory.exists()) {
+            String[] productPhotos = productPhotosDirectory.list();
+            if (productPhotos != null && productPhotos.length > 0) {
+                for (String photoName: productPhotos) {
+                    try {
+                        String photoPathString = buildPhotoPath(productId, photoName);
+
+                        Path photoPath = Paths.get(photoPathString);
+
+                        Files.delete(photoPath);
+                    } catch (ServiceException | IOException ex) {
+                        success = false;
+                    }
+                }
+            }
+        }
+
+        return success;
+    }
+
+    private String buildProductPhotoDirectoryPath(String productId) throws ServiceException {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(buildBasePhotoDirectoryPath());
-        stringBuffer.append(productCode);
+        stringBuffer.append(productId);
         stringBuffer.append('/');
         return stringBuffer.toString();
     }
 
-    private String buildPhotoPath(String productCode, String originalFileName) throws ServiceException {
+    private String buildPhotoPath(String productId, String originalFileName) throws ServiceException {
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(buildProductPhotoDirectoryPath(productCode));
+        stringBuffer.append(buildProductPhotoDirectoryPath(productId));
         stringBuffer.append(originalFileName);
         return stringBuffer.toString();
     }
