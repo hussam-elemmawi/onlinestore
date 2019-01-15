@@ -39,7 +39,7 @@ public class TagServiceImpl implements TagService {
             return true;
         } catch (Exception e) {
             logger.info("Can't create tag " + tag.toString() + " @ " + new Date(System.currentTimeMillis()));
-            throw new ServiceException("Can't getByProductCode all products " + e.getMessage());
+            throw new ServiceException("Can't getByProductId all products " + e.getMessage());
         }
     }
 }

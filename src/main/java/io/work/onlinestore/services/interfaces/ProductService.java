@@ -12,12 +12,12 @@ import java.util.List;
 public interface ProductService {
     List<Product> getAllProducts() throws ServiceException;
     String create(Product product) throws ServiceException;
-    Product getByProductCode(String productCode) throws ServiceException;
+    Product getByProductId(String productId) throws ServiceException;
     void update(Product product) throws ServiceException;
-    void addProductTag(String productCode, Tag tag) throws RecordNotFoundException, ServiceException;
-    List<Tag> getProductTags(String productCode) throws RecordNotFoundException, ServiceException;
-    void addPhotoToProduct(String productCode, MultipartFile photo) throws ServiceException;
-    List<String> getAllProductPhotoEndpoints(String productCode) throws ServiceException;
-    Resource getProductPhoto(String productCode, String photoFileName) throws ServiceException;
+    void addProductTag(String productId, Tag tag) throws RecordNotFoundException, ServiceException;
+    List<Tag> getProductTags(String productId) throws RecordNotFoundException, ServiceException;
+    void addPhotoToProduct(String productId, MultipartFile photo) throws ServiceException;
+    List<String> getAllProductPhotoEndpoints(String productId) throws ServiceException;
+    Resource getProductPhoto(String productId, String photoFileName) throws ServiceException;
     List<Product> filterProductsByTags(List<Tag> tagList) throws ServiceException;
 }

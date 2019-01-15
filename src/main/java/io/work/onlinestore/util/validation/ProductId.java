@@ -1,6 +1,6 @@
 package io.work.onlinestore.util.validation;
 
-import io.work.onlinestore.util.validation.validators.ProductCodeValidator;
+import io.work.onlinestore.util.validation.validators.ProductIdValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ProductCodeValidator.class)
-public @interface ProductCode {
+@Constraint(validatedBy = ProductIdValidator.class)
+public @interface ProductId {
 
     String ERROR_MESSAGE = "Invalid product code";
 

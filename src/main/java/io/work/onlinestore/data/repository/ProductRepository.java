@@ -4,5 +4,5 @@ import io.work.onlinestore.data.model.Product;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ProductRepository extends CrudRepository<Product, Integer> {
-    Product findByProductCode(String productCode);
+    Product findByProductId(String productId);
 }

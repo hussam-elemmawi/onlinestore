@@ -7,7 +7,7 @@ import io.work.onlinestore.services.interfaces.ProductService;
 import io.work.onlinestore.util.exception.RecordNotFoundException;
 import io.work.onlinestore.util.exception.ServiceException;
 import io.work.onlinestore.util.response.ApiResponse;
-import io.work.onlinestore.util.validation.ProductCode;
+import io.work.onlinestore.util.validation.ProductId;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -46,15 +46,15 @@ public class ProductController {
         }
     }
 
-    @GetMapping(path = "/{productCode}")
-    @ApiOperation(value = "Get a product by productCode", notes = "Get a product information by productCode")
-    public ResponseEntity<ApiResponse<Product>> getProductByProductCode(@PathVariable("productCode") @ProductCode String productCode) {
+    @GetMapping(path = "/{productId}")
+    @ApiOperation(value = "Get a product by productId", notes = "Get a product information by productId")
+    public ResponseEntity<ApiResponse<Product>> getProductByProductId(@PathVariable("productId") @ProductId String productId) {
         try {
-            Product product = productService.getByProductCode(productCode);
-            return new ResponseEntity<>(new ApiResponse<>("Get product by productCode success", product), HttpStatus.OK);
+            Product product = productService.getByProductId(productId);
+            return new ResponseEntity<>(new ApiResponse<>("Get product by productId success", product), HttpStatus.OK);
         } catch (ServiceException se) {
-            return new ResponseEntity<>(new ApiResponse<>("Get a product failed with productCode " +
-                    productCode + " ,error: " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse<>("Get a product failed with productId " +
+                    productId + " ,error: " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,8 +62,8 @@ public class ProductController {
     @ApiOperation(value = "Create product", notes = "Create a new product")
     public ResponseEntity<ApiResponse<String>> createProduct(@RequestBody @Valid Product product) {
         try {
-            String productCode = productService.create(product);
-            return new ResponseEntity<>(new ApiResponse<>("Create product successfully", productCode), HttpStatus.CREATED);
+            String productId = productService.create(product);
+            return new ResponseEntity<>(new ApiResponse<>("Create product successfully", productId), HttpStatus.CREATED);
         } catch (ServiceException se) {
             return new ResponseEntity<>(new ApiResponse<>("Create new product failed " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -74,23 +74,23 @@ public class ProductController {
     public ResponseEntity<ApiResponse<String>> updateProduct(@RequestBody @Valid Product product) {
         try {
             productService.update(product);
-            String productCode = product.getProductCode();
-            return new ResponseEntity<>(new ApiResponse<>("Update product successfully", productCode), HttpStatus.OK);
+            String productId = product.getProductId();
+            return new ResponseEntity<>(new ApiResponse<>("Update product successfully", productId), HttpStatus.OK);
         } catch (ServiceException se) {
             return new ResponseEntity<>(new ApiResponse<>("Update product failed " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping(path = "{productCode}/tags")
+    @PostMapping(path = "{productId}/tags")
     @ApiOperation(value = "Add product tags", notes = "Add new tag(s) to a product")
-    public ResponseEntity<List<ApiResponse<String>>> addProductTags(@PathVariable("productCode") @NotBlank String productCode,
+    public ResponseEntity<List<ApiResponse<String>>> addProductTags(@PathVariable("productId") @NotBlank String productId,
                                                                    @RequestBody @Valid List<Tag> tags) {
 
         List<ApiResponse<String>> responses = new ArrayList<>();
         for (Tag tag : tags) {
             try {
-                productService.addProductTag(productCode, tag);
-                responses.add(new ApiResponse<>("Product tag added. ", productCode));
+                productService.addProductTag(productId, tag);
+                responses.add(new ApiResponse<>("Product tag added. ", productId));
             } catch (RecordNotFoundException e) {
                 // return immediately no need to continue the loop
                 responses.add(
@@ -102,48 +102,48 @@ public class ProductController {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping(path = "{productCode}/tags")
+    @GetMapping(path = "{productId}/tags")
     @ApiOperation(value = "Get product tags", notes = "Get new tag(s) to a product")
-    public ResponseEntity<ApiResponse<List<Tag>>> getProductTags(@PathVariable("productCode") @NotBlank String productCode) {
+    public ResponseEntity<ApiResponse<List<Tag>>> getProductTags(@PathVariable("productId") @NotBlank String productId) {
         try {
-            List<Tag> productTagList = productService.getProductTags(productCode);
-            return new ResponseEntity<>(new ApiResponse<>("Product tags with productCode " + productCode, productTagList), HttpStatus.OK);
+            List<Tag> productTagList = productService.getProductTags(productId);
+            return new ResponseEntity<>(new ApiResponse<>("Product tags with productId " + productId, productTagList), HttpStatus.OK);
         } catch (RecordNotFoundException e) {
-            return new ResponseEntity<>(new ApiResponse<>( "Product doesn't exist: " + productCode, null), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ApiResponse<>( "Product doesn't exist: " + productId, null), HttpStatus.NOT_FOUND);
         } catch (ServiceException e) {
             return new ResponseEntity<>(new ApiResponse<>("Get product tags failed " + e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping(path = "/{productCode}/photo")
+    @PostMapping(path = "/{productId}/photo")
     @ApiOperation(value = "Add a photo to product", notes = "Add a new photo product")
-    public ResponseEntity<ApiResponse<String>> createProduct(@PathVariable("productCode") @NotBlank String productCode, @RequestParam("photo") @NotNull MultipartFile photo) {
+    public ResponseEntity<ApiResponse<String>> createProduct(@PathVariable("productId") @NotBlank String productId, @RequestParam("photo") @NotNull MultipartFile photo) {
         try {
-            productService.addPhotoToProduct(productCode, photo);
-            return new ResponseEntity<>(new ApiResponse<>("Product photo uploading success ", productCode), HttpStatus.CREATED);
+            productService.addPhotoToProduct(productId, photo);
+            return new ResponseEntity<>(new ApiResponse<>("Product photo uploading success ", productId), HttpStatus.CREATED);
         } catch (ServiceException se) {
             return new ResponseEntity<>(new ApiResponse<>("Product photo uploading failed " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/{productCode}/photo")
+    @GetMapping("/{productId}/photo")
     @ResponseBody
-    public ResponseEntity<ApiResponse<List<String>>> serveFile(@PathVariable("productCode") @NotBlank String productCode) {
+    public ResponseEntity<ApiResponse<List<String>>> serveFile(@PathVariable("productId") @NotBlank String productId) {
         try {
-            List<String> photosFileName = productService.getAllProductPhotoEndpoints(productCode);
+            List<String> photosFileName = productService.getAllProductPhotoEndpoints(productId);
             return new ResponseEntity<>(new ApiResponse<>("Get all product photos file names success", photosFileName), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(new ApiResponse<>("Get all product photos file names failed " + e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/{productCode}/photo/{photoFileName}")
+    @GetMapping("/{productId}/photo/{photoFileName}")
     @ResponseBody
-    public ResponseEntity<Resource> downloadFile(@PathVariable("productCode") @NotBlank String productCode,
+    public ResponseEntity<Resource> downloadFile(@PathVariable("productId") @NotBlank String productId,
                                                  @PathVariable("photoFileName") @NotBlank String photoFileName, HttpServletRequest request) {
 
         try {
-            Resource resource = productService.getProductPhoto(productCode, photoFileName);
+            Resource resource = productService.getProductPhoto(productId, photoFileName);
 
             // Try to determine file's content type
             String contentType = null;
