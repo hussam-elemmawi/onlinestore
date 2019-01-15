@@ -14,6 +14,7 @@ public interface ProductService {
     String create(Product product) throws ServiceException;
     Product getByProductId(String productId) throws ServiceException;
     void update(Product product) throws ServiceException;
+    void delete(String productId) throws ServiceException;
     void addProductTag(String productId, Tag tag) throws RecordNotFoundException, ServiceException;
     List<Tag> getProductTags(String productId) throws RecordNotFoundException, ServiceException;
     void addPhotoToProduct(String productId, MultipartFile photo) throws ServiceException;

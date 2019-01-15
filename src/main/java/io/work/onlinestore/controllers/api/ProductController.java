@@ -81,6 +81,17 @@ public class ProductController {
         }
     }
 
+    @DeleteMapping(path = "/{productId}")
+    @ApiOperation(value = "Delete product", notes = "Delete all product information")
+    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable("productId") @ProductId String productId) {
+        try {
+            productService.delete(productId);
+            return new ResponseEntity<>(new ApiResponse<>("Delete product successfully", productId), HttpStatus.OK);
+        } catch (ServiceException se) {
+            return new ResponseEntity<>(new ApiResponse<>("Delete product failed " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping(path = "{productId}/tags")
     @ApiOperation(value = "Add product tags", notes = "Add new tag(s) to a product")
     public ResponseEntity<List<ApiResponse<String>>> addProductTags(@PathVariable("productId") @NotBlank String productId,
