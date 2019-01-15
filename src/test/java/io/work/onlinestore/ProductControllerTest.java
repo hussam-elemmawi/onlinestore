@@ -116,22 +116,22 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void test_getProductByProductCode_isFound() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+    public void test_getProductByProductId_isFound() throws Exception {
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
-        when(product.getProductCode()).thenReturn(productCode);
+        when(product.getProductId()).thenReturn(productId);
 
-        when(productService.getByProductCode(productCode)).thenReturn(product);
+        when(productService.getByProductId(productId)).thenReturn(product);
 
         ResponseEntity<ApiResponse<Product>> apiResponse =
-                new ResponseEntity<>(new ApiResponse<>("Get product by productCode success", product), HttpStatus.OK);
+                new ResponseEntity<>(new ApiResponse<>("Get product by productId success", product), HttpStatus.OK);
 
         ObjectMapper mapper = new ObjectMapper();
 
         final String productJson = mapper.writeValueAsString(apiResponse.getBody());
 
-        MvcResult result = mockMvc.perform(get("/api/products/{productCode}", productCode)).andExpect(status().isOk())
+        MvcResult result = mockMvc.perform(get("/api/products/{productId}", productId)).andExpect(status().isOk())
                 .andReturn();
 
         assertEquals(result.getResponse().getContentType(), contentType.toString());
@@ -139,66 +139,66 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void test_getProductByProductCode_invalidProductCode_empty() throws Exception {
-        String productCode = " ";
+    public void test_getProductByProductId_invalidProductId_empty() throws Exception {
+        String productId = " ";
 
-        mockMvc.perform(get("/api/products/{productCode}/", productCode)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/products/{productId}/", productId)).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void test_getProductByProductCode_invalidProductCode_shortProductCode() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode().substring(1); // shorter by 1
+    public void test_getProductByProductId_invalidProductId_shortProductId() throws Exception {
+        String productId = Helpers.generateUniqueProductId().substring(1); // shorter by 1
 
-        mockMvc.perform(get("/api/products/{productCode}/", productCode)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/products/{productId}/", productId)).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void test_getProductByProductCode_invalidProductCode_longProductCode() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode() + 'c'; // longer by one
+    public void test_getProductByProductId_invalidProductId_longProductId() throws Exception {
+        String productId = Helpers.generateUniqueProductId() + 'c'; // longer by one
 
-        mockMvc.perform(get("/api/products/{productCode}/", productCode)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/products/{productId}/", productId)).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void test_getProductByProductCode_invalidProductCode_notValidPrefix() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode().replace('X', 'Z');
+    public void test_getProductByProductId_invalidProductId_notValidPrefix() throws Exception {
+        String productId = Helpers.generateUniqueProductId().replace('X', 'Z');
 
-        mockMvc.perform(get("/api/products/{productCode}/", productCode)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/products/{productId}/", productId)).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void test_getProductByProductCode_invalidProductCode_notValidPostfix() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode().replace('-', '^');
+    public void test_getProductByProductId_invalidProductId_notValidPostfix() throws Exception {
+        String productId = Helpers.generateUniqueProductId().replace('-', '^');
 
-        mockMvc.perform(get("/api/products/{productCode}/", productCode)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/products/{productId}/", productId)).andExpect(status().isBadRequest());
     }
 
     @Test
     public void test_createProduct_isCreated() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
         final String productJson = mapper.writeValueAsString(product);
 
         mockMvc.perform(post("/api/products/").contentType(contentType).content(productJson))
-                .andExpect(status().isCreated()).andExpect(jsonPath("$.data", is(productCode)));
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.data", is(productId)));
     }
 
     @Test
     public void test_createProduct_invalidProductName_null() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
         // invalid
         when(product.getName()).thenReturn(null);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -210,7 +210,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductName_empty() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
@@ -218,7 +218,7 @@ public class ProductControllerTest {
         // invalid
         when(product.getName()).thenReturn(empty);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -230,7 +230,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductName_blank() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
@@ -238,7 +238,7 @@ public class ProductControllerTest {
         // invalid
         when(product.getName()).thenReturn(blank);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -250,14 +250,14 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductDescription_null() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
         // invalid
         when(product.getDescription()).thenReturn(null);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -269,7 +269,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductDescription_empty() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
@@ -277,7 +277,7 @@ public class ProductControllerTest {
         // invalid
         when(product.getDescription()).thenReturn(empty);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -289,7 +289,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductDescription_blank() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
@@ -297,7 +297,7 @@ public class ProductControllerTest {
         // invalid
         when(product.getDescription()).thenReturn(blank);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -309,14 +309,14 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductQuantity_null() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
         // invalid
         when(product.getQuantity()).thenReturn(null);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -328,7 +328,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductQuantity_negative() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
@@ -336,7 +336,7 @@ public class ProductControllerTest {
         // invalid
         when(product.getQuantity()).thenReturn(negative);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -348,14 +348,14 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductPrice_null() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
         // invalid
         when(product.getPrice()).thenReturn(null);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -367,7 +367,7 @@ public class ProductControllerTest {
 
     @Test
     public void test_createProduct_invalidProductPrice_negative() throws Exception {
-        String productCode = Helpers.generateUniqueProductCode();
+        String productId = Helpers.generateUniqueProductId();
 
         Product product = Helpers.createMockProduct();
 
@@ -375,7 +375,7 @@ public class ProductControllerTest {
         // invalid
         when(product.getPrice()).thenReturn(negative);
 
-        when(productService.create(any(Product.class))).thenReturn(productCode);
+        when(productService.create(any(Product.class))).thenReturn(productId);
 
         ObjectMapper mapper = new ObjectMapper();
 

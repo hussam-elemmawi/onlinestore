@@ -29,7 +29,7 @@ public class Product {
 
     @Getter(onMethod = @__(@JsonProperty))
     @Setter
-    private String productCode;
+    private String productId;
 
     @Getter(onMethod = @__(@JsonProperty))
     @Setter
@@ -61,23 +61,30 @@ public class Product {
     @Setter
     private Timestamp updatedAt;
 
+    @Getter(onMethod = @__(@JsonProperty))
+    @Setter
+    @NotBlank
+    private String code;
+
     public static final String PREFIX = "PRODXX_";
 
-    public Product(String name, String description, Integer quantity, Float price) {
+    public Product(String name, String description, Integer quantity, Float price, String code) {
         this.name = name;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
         this.createdAt = new Timestamp(System.currentTimeMillis());
         this.updatedAt = new Timestamp(System.currentTimeMillis());
+        this.code = code;
     }
 
-    public Product(String name, String description, Integer quantity, Float price, Timestamp createdAt, Timestamp updatedAt) {
+    public Product(String name, String description, Integer quantity, Float price, Timestamp createdAt, Timestamp updatedAt, String code) {
         this.name = name;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.code = code;
     }
 }

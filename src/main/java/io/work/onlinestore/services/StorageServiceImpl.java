@@ -43,7 +43,7 @@ public class StorageServiceImpl implements StorageService {
             Files.copy(photo.getInputStream(), newPhotoFilePath, StandardCopyOption.REPLACE_EXISTING);
 
         } catch (ServiceException | IOException e) {
-            logger.info("Can't store product photo, productCode " + productCode + ", photoName " +
+            logger.info("Can't store product photo, productId " + productCode + ", photoName " +
                     photo.getOriginalFilename() + " " + e.getMessage() + " @ " + new Date(System.currentTimeMillis()));
             throw new ServiceException(e.getMessage());
         }
@@ -68,12 +68,12 @@ public class StorageServiceImpl implements StorageService {
             if(resource.exists()) {
                 return resource;
             } else {
-                logger.info("Can't loadPhotoFileAsResource, productCode " + productCode +
+                logger.info("Can't loadPhotoFileAsResource, productId " + productCode +
                         ", photoName " + photoFileName + " @ " + new Date(System.currentTimeMillis()));
                 throw new ServiceException("File not found " + photoFileName);
             }
         } catch (MalformedURLException | ServiceException ex) {
-            logger.info("Can't loadPhotoFileAsResource, productCode " + productCode +
+            logger.info("Can't loadPhotoFileAsResource, productId " + productCode +
                     ", photoName " + photoFileName + " " + ex.getMessage() + " @ " + new Date(System.currentTimeMillis()));
             throw new ServiceException("File not found " + photoFileName);
         }
