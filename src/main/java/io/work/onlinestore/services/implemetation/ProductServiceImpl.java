@@ -1,4 +1,4 @@
-package io.work.onlinestore.services;
+package io.work.onlinestore.services.implemetation;
 
 import io.work.onlinestore.data.model.Product;
 import io.work.onlinestore.data.model.ProductTagRelation;
@@ -48,19 +48,13 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private String generateUniqueProductCode() {
-        return Product.PREFIX + UUID.randomUUID();
-    }
-
     @Override
-    public String create(Product product) throws ServiceException {
+    public Integer create(Product product) throws ServiceException {
         try {
-            String productCode = generateUniqueProductCode();
-            product.setProductId(productCode);
             product.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-            productRepository.save(product);
-            return productCode;
+            product = productRepository.save(product);
+            return product.getProductId();
         } catch (Exception e) {
             logger.info("Can't create product " + e.getMessage() + " @ " + new Date(System.currentTimeMillis()));
             throw new ServiceException("Can't create product " + e.getMessage());
@@ -85,22 +79,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void update(Product product) throws ServiceException {
         try {
-            Product savedProduct = getByProductId(product.getProductId());
-            updateProductData(savedProduct, product);
-            productRepository.save(savedProduct);
+            product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            productRepository.save(product);
         } catch (Exception e) {
             logger.info("Can't update product by code " + product.getProductId() + ", " + e.getMessage() +
                     " @ " + new Date(System.currentTimeMillis()));
             throw new ServiceException("Can't update product " + e.getMessage());
         }
-    }
-
-    private void updateProductData(Product dirtyProduct, Product freshProduct) {
-        dirtyProduct.setName(freshProduct.getName());
-        dirtyProduct.setDescription(freshProduct.getDescription());
-        dirtyProduct.setQuantity(freshProduct.getQuantity());
-        dirtyProduct.setPrice(freshProduct.getPrice());
-        dirtyProduct.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
     }
 
     @Override
@@ -121,9 +106,9 @@ public class ProductServiceImpl implements ProductService {
         if (product == null) {
             throw new RecordNotFoundException("Product not found: " + productId);
         }
-        int productInternalId = product.getId();
+        int productInternalId = product.getProductId();
 
-        Tag savedTag = tagRepository.findByNameAndValue(tag.getName(), tag.getValue());
+        Tag savedTag = tagRepository.findByTagNameAndValue(tag.getTagName(), tag.getValue());
 
         if (savedTag == null) {
             logger.info("Can't add tag for product code " + product.getProductId() + ", Tag not found " +
@@ -132,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         try {
-            int tagId = savedTag.getId();
+            int tagId = savedTag.getTagId();
 
             addProductTagRelation(new ProductTagRelation(productInternalId, tagId));
         } catch (Exception e) {
@@ -157,7 +142,7 @@ public class ProductServiceImpl implements ProductService {
             if (product == null) {
                 throw new RecordNotFoundException("There is no product with productId " + productId);
             }
-            int productInternalId = product.getId();
+            int productInternalId = product.getProductId();
 
             List<ProductTagRelation> productTagRelationList =
                     productTagRelationRepository.findProductTagRelationByProductId(productInternalId);
@@ -196,14 +181,14 @@ public class ProductServiceImpl implements ProductService {
         Set<Product> productSet = new HashSet<>();
         for (Tag tag : tagList) {
             tag = prepareTag(tag);
-            Tag savedTag = tagRepository.findByNameAndValue(tag.getName(), tag.getValue());
+            Tag savedTag = tagRepository.findByTagNameAndValue(tag.getTagName(), tag.getValue());
             if (savedTag == null) {
                 logger.info("Can't find tag for filtering, " + tag.toString() +
                         " @ " + new Date(System.currentTimeMillis()));
             // throw new RecordNotFoundException("Tag not found: " + tag.toString());
             } else {
                 List<ProductTagRelation> productTagRelationList =
-                        productTagRelationRepository.findProductTagRelationByTagId(savedTag.getId());
+                        productTagRelationRepository.findProductTagRelationByTagId(savedTag.getTagId());
                 if (productTagRelationList != null && productTagRelationList.size() > 0) {
                     List<Product> products = getAllProductsByProductTagRelations(productTagRelationList);
                     productSet.addAll(products);
@@ -216,8 +201,8 @@ public class ProductServiceImpl implements ProductService {
 
     private Tag prepareTag(Tag tag) {
         if (tag != null) {
-            if (tag.getName() != null) {
-                tag.setName(tag.getName().trim());
+            if (tag.getTagName() != null) {
+                tag.setTagName(tag.getTagName().trim());
             }
 
             if (tag.getValue() != null) {

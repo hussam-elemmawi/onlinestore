@@ -1,16 +1,11 @@
 package io.work.onlinestore.data.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,71 +13,79 @@ import java.sql.Timestamp;
 
 @Entity
 @NoArgsConstructor
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect
 public class Product {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter
     @Getter
-    private int id;
+    private Integer productId;
 
-    @Getter(onMethod = @__(@JsonProperty))
     @Setter
-    private String productId;
-
-    @Getter(onMethod = @__(@JsonProperty))
-    @Setter
+    @Getter
     @NotBlank
-    private String name;
+    private String productName;
 
-    @Getter(onMethod = @__(@JsonProperty))
     @Setter
+    @Getter
     @NotBlank
-    private String description;
+    private String productDescription;
 
-    @Getter(onMethod = @__(@JsonProperty))
+
     @Setter
+    @Getter
     @NotNull
     @Min(0)
     private Integer quantity;
 
-    @Getter(onMethod = @__(@JsonProperty))
+
     @Setter
+    @Getter
     @NotNull
     @Min(0)
     private Float price;
 
-    @Getter(onMethod = @__(@JsonProperty))
+
     @Setter
+    @Getter
+    @NotNull
+    @Min(0)
+    private Float offerPrice;
+
+
+    @Setter
+    @Getter
     private Timestamp createdAt;
 
-    @Getter(onMethod = @__(@JsonProperty))
+
     @Setter
+    @Getter
     private Timestamp updatedAt;
 
-    @Getter(onMethod = @__(@JsonProperty))
+
     @Setter
+    @Getter
     @NotBlank
     private String code;
 
-    public static final String PREFIX = "PRODXX_";
-
-    public Product(String name, String description, Integer quantity, Float price, String code) {
-        this.name = name;
-        this.description = description;
+    public Product(String productName, String productDescription, Integer quantity, Float price, Float offerPrice, String code) {
+        this.productName = productName;
+        this.productDescription = productDescription;
         this.quantity = quantity;
         this.price = price;
+        this.offerPrice = offerPrice;
         this.createdAt = new Timestamp(System.currentTimeMillis());
         this.updatedAt = new Timestamp(System.currentTimeMillis());
         this.code = code;
     }
 
-    public Product(String name, String description, Integer quantity, Float price, Timestamp createdAt, Timestamp updatedAt, String code) {
-        this.name = name;
-        this.description = description;
+    public Product(String productName, String productDescription, Integer quantity, Float price, Float offerPrice, Timestamp createdAt, Timestamp updatedAt, String code) {
+        this.productName = productName;
+        this.productDescription = productDescription;
         this.quantity = quantity;
         this.price = price;
+        this.offerPrice = offerPrice;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.code = code;

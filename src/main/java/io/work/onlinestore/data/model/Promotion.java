@@ -12,31 +12,40 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @NoArgsConstructor
-public class Tag {
+public class Promotion {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Setter
     @Getter
-    private Integer tagId;
+    private Integer promotionId;
 
-    @Getter
     @Setter
-    @NotBlank
-    private String tagName;
-
     @Getter
+    private String promotionDescription;
+
     @Setter
+    @Getter
     @NotBlank
-    private String value;
+    private Float highPrice;
 
-    public Tag(@NotBlank String name, @NotBlank String value) {
-        this.tagName = name;
-        this.value = value;
-    }
+    @Setter
+    @Getter
+    @NotBlank
+    private Float lowPrice;
 
-    @Override
-    public String toString() {
-        return tagName + ": " + value;
-    }
+    @Setter
+    @Getter
+    @NotBlank
+    private Float highPercent;
+
+    @Setter
+    @Getter
+    @NotBlank
+    private Float lowPercent;
+
+    @Setter
+    @Getter
+    private boolean freeShip;
+
 }

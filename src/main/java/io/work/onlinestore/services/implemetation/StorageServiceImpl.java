@@ -1,4 +1,4 @@
-package io.work.onlinestore.services;
+package io.work.onlinestore.services.implemetation;
 
 import io.work.onlinestore.services.interfaces.StorageService;
 import io.work.onlinestore.util.exception.ServiceException;

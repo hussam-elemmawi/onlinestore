@@ -7,7 +7,6 @@ import io.work.onlinestore.services.interfaces.ProductService;
 import io.work.onlinestore.util.exception.RecordNotFoundException;
 import io.work.onlinestore.util.exception.ServiceException;
 import io.work.onlinestore.util.response.ApiResponse;
-import io.work.onlinestore.util.validation.ProductId;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -48,7 +47,7 @@ public class ProductController {
 
     @GetMapping(path = "/{productId}")
     @ApiOperation(value = "Get a product by productId", notes = "Get a product information by productId")
-    public ResponseEntity<ApiResponse<Product>> getProductByProductId(@PathVariable("productId") @ProductId String productId) {
+    public ResponseEntity<ApiResponse<Product>> getProductByProductId(@PathVariable("productId") String productId) {
         try {
             Product product = productService.getByProductId(productId);
             return new ResponseEntity<>(new ApiResponse<>("Get product by productId success", product), HttpStatus.OK);
@@ -60,9 +59,9 @@ public class ProductController {
 
     @PostMapping(path = "/")
     @ApiOperation(value = "Create product", notes = "Create a new product")
-    public ResponseEntity<ApiResponse<String>> createProduct(@RequestBody @Valid Product product) {
+    public ResponseEntity<ApiResponse<Integer>> createProduct(@RequestBody @Valid Product product) {
         try {
-            String productId = productService.create(product);
+            Integer productId = productService.create(product);
             return new ResponseEntity<>(new ApiResponse<>("Create product successfully", productId), HttpStatus.CREATED);
         } catch (ServiceException se) {
             return new ResponseEntity<>(new ApiResponse<>("Create new product failed " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -70,11 +69,11 @@ public class ProductController {
     }
 
     @PutMapping(path = "/")
-    @ApiOperation(value = "Update product", notes = "Update a new product")
-    public ResponseEntity<ApiResponse<String>> updateProduct(@RequestBody @Valid Product product) {
+    @ApiOperation(value = "Update product", notes = "Update a product")
+    public ResponseEntity<ApiResponse<Integer>> updateProduct(@RequestBody @Valid Product product) {
         try {
             productService.update(product);
-            String productId = product.getProductId();
+            Integer productId = product.getProductId();
             return new ResponseEntity<>(new ApiResponse<>("Update product successfully", productId), HttpStatus.OK);
         } catch (ServiceException se) {
             return new ResponseEntity<>(new ApiResponse<>("Update product failed " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -83,7 +82,7 @@ public class ProductController {
 
     @DeleteMapping(path = "/{productId}")
     @ApiOperation(value = "Delete product", notes = "Delete all product information")
-    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable("productId") @ProductId String productId) {
+    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable("productId") String productId) {
         try {
             productService.delete(productId);
             return new ResponseEntity<>(new ApiResponse<>("Delete product successfully", productId), HttpStatus.OK);

@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface TagService {
     List<Tag> getAllTags() throws ServiceException;
-    boolean create(Tag tag) throws ServiceException;
+    List<Tag> getAllTagsByTagName(String tagName) throws ServiceException;
+    List<Tag> getAllTagsByTagId(Integer tagId) throws ServiceException;
+    List<Tag> getAllTagsByValue(String value) throws ServiceException;
+    void create(Tag tag) throws ServiceException;
 }

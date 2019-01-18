@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ProductService {
     List<Product> getAllProducts() throws ServiceException;
-    String create(Product product) throws ServiceException;
+    Integer create(Product product) throws ServiceException;
     Product getByProductId(String productId) throws ServiceException;
     void update(Product product) throws ServiceException;
     void delete(String productId) throws ServiceException;
