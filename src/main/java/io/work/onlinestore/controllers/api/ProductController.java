@@ -7,6 +7,7 @@ import io.work.onlinestore.services.interfaces.ProductService;
 import io.work.onlinestore.util.exception.RecordNotFoundException;
 import io.work.onlinestore.util.exception.ServiceException;
 import io.work.onlinestore.util.response.ApiResponse;
+import io.work.onlinestore.util.validation.ProductId;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class ProductController {
 
     @GetMapping(path = "/{productId}")
     @ApiOperation(value = "Get a product by productId", notes = "Get a product information by productId")
-    public ResponseEntity<ApiResponse<Product>> getProductByProductId(@PathVariable("productId") String productId) {
+    public ResponseEntity<ApiResponse<Product>> getProductByProductId(@PathVariable("productId") @ProductId Integer productId) {
         try {
             Product product = productService.getByProductId(productId);
             return new ResponseEntity<>(new ApiResponse<>("Get product by productId success", product), HttpStatus.OK);
@@ -82,10 +84,10 @@ public class ProductController {
 
     @DeleteMapping(path = "/{productId}")
     @ApiOperation(value = "Delete product", notes = "Delete all product information")
-    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable("productId") String productId) {
+    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable("productId") @ProductId Integer productId) {
         try {
             productService.delete(productId);
-            return new ResponseEntity<>(new ApiResponse<>("Delete product successfully", productId), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse<>("Delete product successfully", productId.toString()), HttpStatus.OK);
         } catch (ServiceException se) {
             return new ResponseEntity<>(new ApiResponse<>("Delete product failed " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -93,14 +95,14 @@ public class ProductController {
 
     @PostMapping(path = "{productId}/tags")
     @ApiOperation(value = "Add product tags", notes = "Add new tag(s) to a product")
-    public ResponseEntity<List<ApiResponse<String>>> addProductTags(@PathVariable("productId") @NotBlank String productId,
+    public ResponseEntity<List<ApiResponse<String>>> addProductTags(@PathVariable("productId") @ProductId Integer productId,
                                                                    @RequestBody @Valid List<Tag> tags) {
 
         List<ApiResponse<String>> responses = new ArrayList<>();
         for (Tag tag : tags) {
             try {
                 productService.addProductTag(productId, tag);
-                responses.add(new ApiResponse<>("Product tag added. ", productId));
+                responses.add(new ApiResponse<>("Product tag added. ", productId.toString()));
             } catch (RecordNotFoundException e) {
                 // return immediately no need to continue the loop
                 responses.add(
@@ -114,7 +116,7 @@ public class ProductController {
 
     @GetMapping(path = "{productId}/tags")
     @ApiOperation(value = "Get product tags", notes = "Get new tag(s) to a product")
-    public ResponseEntity<ApiResponse<List<Tag>>> getProductTags(@PathVariable("productId") @NotBlank String productId) {
+    public ResponseEntity<ApiResponse<List<Tag>>> getProductTags(@PathVariable("productId") @ProductId Integer productId) {
         try {
             List<Tag> productTagList = productService.getProductTags(productId);
             return new ResponseEntity<>(new ApiResponse<>("Product tags with productId " + productId, productTagList), HttpStatus.OK);
@@ -127,10 +129,10 @@ public class ProductController {
 
     @PostMapping(path = "/{productId}/photo")
     @ApiOperation(value = "Add a photo to product", notes = "Add a new photo product")
-    public ResponseEntity<ApiResponse<String>> createProduct(@PathVariable("productId") @NotBlank String productId, @RequestParam("photo") @NotNull MultipartFile photo) {
+    public ResponseEntity<ApiResponse<String>> createProduct(@PathVariable("productId") @ProductId Integer productId, @RequestParam("photo") @NotNull MultipartFile photo) {
         try {
             productService.addPhotoToProduct(productId, photo);
-            return new ResponseEntity<>(new ApiResponse<>("Product photo uploading success ", productId), HttpStatus.CREATED);
+            return new ResponseEntity<>(new ApiResponse<>("Product photo uploading success ", productId.toString()), HttpStatus.CREATED);
         } catch (ServiceException se) {
             return new ResponseEntity<>(new ApiResponse<>("Product photo uploading failed " + se.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -138,7 +140,7 @@ public class ProductController {
 
     @GetMapping("/{productId}/photo")
     @ResponseBody
-    public ResponseEntity<ApiResponse<List<String>>> serveFile(@PathVariable("productId") @NotBlank String productId) {
+    public ResponseEntity<ApiResponse<List<String>>> serveFile(@PathVariable("productId") @ProductId Integer productId) {
         try {
             List<String> photosFileName = productService.getAllProductPhotoEndpoints(productId);
             return new ResponseEntity<>(new ApiResponse<>("Get all product photos file names success", photosFileName), HttpStatus.OK);
@@ -149,7 +151,7 @@ public class ProductController {
 
     @GetMapping("/{productId}/photo/{photoFileName}")
     @ResponseBody
-    public ResponseEntity<Resource> downloadFile(@PathVariable("productId") @NotBlank String productId,
+    public ResponseEntity<Resource> downloadFile(@PathVariable("productId") @ProductId Integer productId,
                                                  @PathVariable("photoFileName") @NotBlank String photoFileName, HttpServletRequest request) {
 
         try {

@@ -1,6 +1,11 @@
 package io.work.onlinestore.data.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,60 +17,57 @@ import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity
+@Data
 @NoArgsConstructor
-@JsonAutoDetect
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter
-    @Getter
+    @Setter(onMethod = @__(@JsonProperty))
+    @Getter(onMethod = @__(@JsonProperty))
     private Integer productId;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotBlank
     private String productName;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotBlank
     private String productDescription;
 
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     @Min(0)
     private Integer quantity;
 
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     @Min(0)
     private Float price;
 
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     @Min(0)
     private Float offerPrice;
 
 
-    @Setter
-    @Getter
+    @Setter(onMethod = @__(@JsonIgnore))
+    @Getter(onMethod = @__(@JsonProperty))
+    @JsonFormat(pattern="dd/MM/yyyy hh:mm")
     private Timestamp createdAt;
 
 
-    @Setter
-    @Getter
+    @Setter(onMethod = @__(@JsonIgnore))
+    @Getter(onMethod = @__(@JsonProperty))
+    @JsonFormat(pattern="dd/MM/yyyy hh:mm")
     private Timestamp updatedAt;
 
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotBlank
     private String code;
 

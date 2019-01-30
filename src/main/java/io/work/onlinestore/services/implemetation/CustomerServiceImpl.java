@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
@@ -54,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
             }
             List<Address> addresses = addressRepository.findAllByCustomerId(customerId);
             List<Phone> phones = phoneRepository.findAllByCustomerId(customerId);
-            FullCustomer fullCustomer = new FullCustomer(customer,addresses,phones);
+            FullCustomer fullCustomer = new FullCustomer(customer, addresses, phones);
             return fullCustomer;
         } catch (Exception e) {
             logger.info("Can't get customer by code " + customerId + ", " + e.getMessage() +
@@ -78,9 +79,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void updateCustomer(Customer customer) throws ServiceException {
         try {
-            if(customer.getCreatedAt() == null)
+            Optional<Customer> savedCustomer = customerRepository.findById(customer.getCustomerId());
+            if (savedCustomer.isPresent()) {
                 customer.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            customerRepository.save(customer);
+                customerRepository.save(customer);
+            } else {
+                throw new RecordNotFoundException("Customer not found.");
+            }
         } catch (Exception e) {
             logger.info("Can't update customer by code " + customer.getCustomerId() + ", " + e.getMessage() +
                     " @ " + new Date(System.currentTimeMillis()));

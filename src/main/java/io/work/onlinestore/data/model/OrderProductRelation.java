@@ -1,5 +1,8 @@
 package io.work.onlinestore.data.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,33 +13,32 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
+@Data
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"orderId", "productId"})
 })
 @IdClass(OrderProductRelation.CompositeKey.class)
 @NoArgsConstructor
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+
 public class OrderProductRelation {
 
     @Id
-    @Getter
-    @Setter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     private Integer orderId;
 
     @Id
-    @Getter
-    @Setter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     private Integer productId;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     @Min(0)
     private Integer orderQuantity;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     @Min(0)
     private Float productTotalPrice;

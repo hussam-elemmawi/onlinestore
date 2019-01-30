@@ -61,7 +61,7 @@ public class CustomerController {
 
     @PutMapping(path = "/{customerId}")
     @ApiOperation(value = "Update customer", notes = "Update a customer")
-    public ResponseEntity<ApiResponse<Integer>> updateProduct(@PathVariable("customerId") Integer oldCustomerId, @RequestBody @Valid Customer customer) {
+    public ResponseEntity<ApiResponse<Integer>> updateProduct(@RequestBody @Valid Customer customer) {
         try {
             customerService.updateCustomer(customer);
             Integer customerId = customer.getCustomerId();

@@ -5,8 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ProductRepository extends CrudRepository<Product, Integer> {
-    Product findByProductId(String productId);
+    Product findByProductId(Integer productId);
 
     @Transactional
-    int deleteByProductId(String productId);
+    int deleteByProductId(Integer productId);
 }

@@ -1,6 +1,8 @@
 package io.work.onlinestore.data.model;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
+@Data
 @NoArgsConstructor
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"customerId", "phone"})
@@ -19,14 +22,10 @@ import java.io.Serializable;
 public class Phone {
 
     @Id
-    @Getter
-    @Setter
     @NotNull
     private Integer customerId;
 
     @Id
-    @Getter
-    @Setter
     @NotBlank
     private String phone;
 
@@ -34,5 +33,4 @@ public class Phone {
         private Integer customerId;
         private Integer phone;
     }
-
 }

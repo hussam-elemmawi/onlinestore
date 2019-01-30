@@ -28,7 +28,7 @@ public class StorageServiceImpl implements StorageService {
     private final static Logger logger = Logger.getLogger(StorageServiceImpl.class.getSimpleName());
 
     @Override
-    public boolean storeProductPhoto(String productId, MultipartFile photo) throws ServiceException {
+    public boolean storeProductPhoto(Integer productId, MultipartFile photo) throws ServiceException {
         try {
             String productPhotosDirecotrPath = buildProductPhotoDirectoryPath(productId);
             File productPhotoDirectory = new File(productPhotosDirecotrPath);
@@ -51,7 +51,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public String[] getProductPhotosNames(String productId) throws ServiceException {
+    public String[] getProductPhotosNames(Integer productId) throws ServiceException {
         File productPhotosDirectory = new File(buildProductPhotoDirectoryPath(productId));
         if (productPhotosDirectory != null && productPhotosDirectory.exists()) {
             return productPhotosDirectory.list();
@@ -60,7 +60,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public Resource loadPhotoFileAsResource(String productId, String photoFileName) throws ServiceException  {
+    public Resource loadPhotoFileAsResource(Integer productId, String photoFileName) throws ServiceException  {
         try {
             String photoFilePathString = buildPhotoPath(productId, photoFileName);
             Path photoFilePath = Paths.get(photoFilePathString);
@@ -80,7 +80,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public boolean deleteProductPhotos(String productId) throws ServiceException {
+    public boolean deleteProductPhotos(Integer productId) throws ServiceException {
         File productPhotosDirectory = new File(buildProductPhotoDirectoryPath(productId));
         boolean success = true;
         if (productPhotosDirectory.exists()) {
@@ -103,7 +103,7 @@ public class StorageServiceImpl implements StorageService {
         return success;
     }
 
-    private String buildProductPhotoDirectoryPath(String productId) throws ServiceException {
+    private String buildProductPhotoDirectoryPath(Integer productId) throws ServiceException {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(buildBasePhotoDirectoryPath());
         stringBuffer.append(productId);
@@ -111,7 +111,7 @@ public class StorageServiceImpl implements StorageService {
         return stringBuffer.toString();
     }
 
-    private String buildPhotoPath(String productId, String originalFileName) throws ServiceException {
+    private String buildPhotoPath(Integer productId, String originalFileName) throws ServiceException {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(buildProductPhotoDirectoryPath(productId));
         stringBuffer.append(originalFileName);

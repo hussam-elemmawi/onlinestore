@@ -1,5 +1,9 @@
 package io.work.onlinestore.data.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,22 +15,21 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
 @Entity
+@Data
 @NoArgsConstructor
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Tag {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Setter
-    @Getter
+    @Setter(onMethod = @__(@JsonIgnore))
     private Integer tagId;
 
-    @Getter
-    @Setter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotBlank
     private String tagName;
 
-    @Getter
-    @Setter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotBlank
     private String value;
 

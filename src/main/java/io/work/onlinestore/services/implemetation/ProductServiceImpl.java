@@ -62,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getByProductId(String productId) throws ServiceException {
+    public Product getByProductId(Integer productId) throws ServiceException {
         try {
             Product product = productRepository.findByProductId(productId);
             if (product == null) {
@@ -79,8 +79,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void update(Product product) throws ServiceException {
         try {
-            product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-            productRepository.save(product);
+            Optional<Product> savedProduct = productRepository.findById(product.getProductId());
+            if (savedProduct.isPresent()) {
+                product.setCreatedAt(savedProduct.get().getCreatedAt());
+                product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+                productRepository.save(product);
+            } else {
+                throw new RecordNotFoundException("Product not found.");
+            }
         } catch (Exception e) {
             logger.info("Can't update product by code " + product.getProductId() + ", " + e.getMessage() +
                     " @ " + new Date(System.currentTimeMillis()));
@@ -89,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(String productId) throws ServiceException {
+    public void delete(Integer productId) throws ServiceException {
         try {
             productRepository.deleteByProductId(productId);
             storageService.deleteProductPhotos(productId);
@@ -101,7 +107,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void addProductTag(String productId, Tag tag) throws RecordNotFoundException, ServiceException {
+    public void addProductTag(Integer productId, Tag tag) throws RecordNotFoundException, ServiceException {
         Product product = productRepository.findByProductId(productId);
         if (product == null) {
             throw new RecordNotFoundException("Product not found: " + productId);
@@ -136,7 +142,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Tag> getProductTags(String productId) throws ServiceException {
+    public List<Tag> getProductTags(Integer productId) throws ServiceException {
         try {
             Product product = productRepository.findByProductId(productId);
             if (product == null) {
@@ -161,17 +167,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void addPhotoToProduct(String productId, MultipartFile photo) throws ServiceException {
+    public void addPhotoToProduct(Integer productId, MultipartFile photo) throws ServiceException {
         storageService.storeProductPhoto(productId, photo);
     }
 
     @Override
-    public List<String> getAllProductPhotoEndpoints(String productId) throws ServiceException {
+    public List<String> getAllProductPhotoEndpoints(Integer productId) throws ServiceException {
         return Arrays.asList(storageService.getProductPhotosNames(productId));
     }
 
     @Override
-    public Resource getProductPhoto(String productId, String photoFileName) throws ServiceException {
+    public Resource getProductPhoto(Integer productId, String photoFileName) throws ServiceException {
         return storageService.loadPhotoFileAsResource(productId, photoFileName);
     }
 

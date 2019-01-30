@@ -1,5 +1,6 @@
 package io.work.onlinestore.data.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 
 @Entity
 @NoArgsConstructor
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"customerId", "address"})
 })
@@ -18,17 +20,12 @@ import java.io.Serializable;
 public class Address {
 
     @Id
-    @Getter
-    @Setter
     @NotNull
     private Integer customerId;
 
     @Id
-    @Getter
-    @Setter
     @NotBlank
     private String address;
-
 
     public static class CompositeKey implements Serializable {
         private Integer customerId;

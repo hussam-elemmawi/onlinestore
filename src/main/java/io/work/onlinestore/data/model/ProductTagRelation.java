@@ -1,5 +1,6 @@
 package io.work.onlinestore.data.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
+@Data
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"productId", "tagId"})
 })
@@ -17,14 +19,10 @@ import java.io.Serializable;
 public class ProductTagRelation {
 
     @Id
-    @Getter
-    @Setter
     @NotNull
     private Integer productId;
 
     @Id
-    @Getter
-    @Setter
     @NotNull
     private Integer tagId;
 

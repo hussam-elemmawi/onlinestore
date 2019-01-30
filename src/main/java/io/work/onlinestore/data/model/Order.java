@@ -1,6 +1,8 @@
 package io.work.onlinestore.data.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,49 +14,41 @@ import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity(name = "order_info")
+@Data
 @NoArgsConstructor
-@JsonAutoDetect
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Order {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     private Integer orderId;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     private Integer customerId;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     private Integer orderStatusId;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     @Min(0)
     private Float totalPrice;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     private Float offerPrice;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     private Integer promotionId;
 
-    @Setter
-    @Getter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotNull
     private Timestamp date;
 
-    @Getter
-    @Setter
+    @Getter(onMethod = @__(@JsonProperty))
     @NotBlank
     private String shipAddress;
-
 }
